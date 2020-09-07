@@ -5,8 +5,8 @@ import os
 import warnings
 from week import *
 from utils import *
+from visulisation import *
 from dateutil.relativedelta import *
-
 
 
 PATH = "RateSource2/"
@@ -60,87 +60,87 @@ def gg_price():
 
     spikes_combine = pd.concat([second_last_spikes, last_day_spikes, first_day_spikes])
     spikes_combine = spikes_combine[['date', 'diffs']]
+    """
+        print("---------------------inter_month stats---------------------")
+        prob = end_start(second_last_spikes, first_day)
+        print("the probability of turning over next month given a spike at the end of last month is : {}".format(prob))
+
+        dd, du, ud, uu, pm, nm= get_first_day_perform(second_last, first_day)
+        print("when neg spike, prob of next month down is {}".format(dd))
+        print("when neg spike, prob of next month up is {}".format(du))
+        print("mean diffs: {}".format(nm))
+        print("when pos spike, prob of next month down is {}".format(ud))
+        print("when pos spike, prob of next month up is {}".format(uu))
+        print("mean diffs: {}\n".format(pm))
+
+        # statistics for abs
+        total_spikes = len(gg_spikes)
+        sec_abs_spikes = len(second_last_spikes)
+        spikes_distribution = len(gg_month_end_spikes)/total_spikes
+        probability = len(both_day_spikes)/sec_abs_spikes
+
+        print("---------------------month_end statistics------------------------")
+        print("statistics with abs")
+        print("given a spike on the second-last day of a month, "
+              "the probability of having another spike on the last day of month is: {}".format(probability))
+        print("the proportion of distribution of spikes on the month ends: {}\n".format(spikes_distribution))
+
+        # plotting
+        # plt.bar(gg_spikes.year_month, abs(gg_spikes.diffs))
+        # plt.plot(gg_rate.year_month,[THRES]*len(gg_rate), color = 'r')
+        # plt.show()
+
+
+        both_1, both_2, both_3, both_4 = sign_spikes(second_last_spikes, last_day)
+        both_5, both_6, both_7, both_8 = sign_spikes_updown(second_last_spikes, last_day)
+        mean1 = both_5.diffs_last.mean()
+        mean2 = both_6.diffs_last.mean()
+        mean3 = both_7.diffs_last.mean()
+        mean4 = both_8.diffs_last.mean()
+        sec_last_minus, sec_last_plus, _, _ = sign_spikes_pre(second_last_spikes, last_day)
+
+
+        prob1 = len(both_1)/len(sec_last_minus)
+        prob2 = len(both_2)/len(sec_last_minus)
+        prob3 = len(both_3)/len(sec_last_plus)
+        prob4 = len(both_4)/len(sec_last_plus)
+        prob5 = len(both_5)/len(sec_last_minus)
+        prob6 = len(both_6)/len(sec_last_minus)
+        prob7 = len(both_7)/len(sec_last_plus)
+        prob8 = len(both_8)/len(sec_last_plus)
+        mean_last_day1 = mean_diff(sec_last_minus, last_day)
+        mean_last_day2 = mean_diff(sec_last_plus, last_day)
+
+        print("when second_last_spike appears to be -, the probability of last day spike being - is: {}".format(prob1))
+
+        print("when second_last_spike appears to be -, the probability of last day spike being + is: {}".format(prob2))
+        print("given a negative spike on the second-last day of a month, the mean diffs on last day of month is: {}".format(
+            mean_last_day1))
+        print("the probability of negative last day diffs is {}, and the mean diffs is: {}".format(prob5,mean1))
+        print("the probability of positive last day diffs is {}, and the mean diffs is: {}\n".format(prob6,mean2))
+
+        print("when second_last_spike appears to be +, the probability of last day spike being - is: {}".format(prob3))
+        print("when second_last_spike appears to be +, the probability of last day spike being + is: {}".format(prob4))
+        print("given a positive spike on the second-last day of a month, the mean diffs on last day of month is: {}".format(
+            mean_last_day2))
+        print("the probability of negative last day diffs is {}, and the mean diffs is: {}".format(prob7, mean3))
+        print("the probability of positive last day diffs is {}, and the mean diffs is: {}\n".format(prob8, mean4))
+
+    """
     return spikes_combine
-
-"""
-    print("---------------------inter_month stats---------------------")
-    prob = end_start(second_last_spikes, first_day)
-    print("the probability of turning over next month given a spike at the end of last month is : {}".format(prob))
-
-    dd, du, ud, uu, pm, nm= get_first_day_perform(second_last, first_day)
-    print("when neg spike, prob of next month down is {}".format(dd))
-    print("when neg spike, prob of next month up is {}".format(du))
-    print("mean diffs: {}".format(nm))
-    print("when pos spike, prob of next month down is {}".format(ud))
-    print("when pos spike, prob of next month up is {}".format(uu))
-    print("mean diffs: {}\n".format(pm))
-
-    # statistics for abs
-    total_spikes = len(gg_spikes)
-    sec_abs_spikes = len(second_last_spikes)
-    spikes_distribution = len(gg_month_end_spikes)/total_spikes
-    probability = len(both_day_spikes)/sec_abs_spikes
-
-    print("---------------------month_end statistics------------------------")
-    print("statistics with abs")
-    print("given a spike on the second-last day of a month, "
-          "the probability of having another spike on the last day of month is: {}".format(probability))
-    print("the proportion of distribution of spikes on the month ends: {}\n".format(spikes_distribution))
-
-    # plotting
-    # plt.bar(gg_spikes.year_month, abs(gg_spikes.diffs))
-    # plt.plot(gg_rate.year_month,[THRES]*len(gg_rate), color = 'r')
-    # plt.show()
-
-   
-    both_1, both_2, both_3, both_4 = sign_spikes(second_last_spikes, last_day)
-    both_5, both_6, both_7, both_8 = sign_spikes_updown(second_last_spikes, last_day)
-    mean1 = both_5.diffs_last.mean()
-    mean2 = both_6.diffs_last.mean()
-    mean3 = both_7.diffs_last.mean()
-    mean4 = both_8.diffs_last.mean()
-    sec_last_minus, sec_last_plus, _, _ = sign_spikes_pre(second_last_spikes, last_day)
-
-   
-    prob1 = len(both_1)/len(sec_last_minus)
-    prob2 = len(both_2)/len(sec_last_minus)
-    prob3 = len(both_3)/len(sec_last_plus)
-    prob4 = len(both_4)/len(sec_last_plus)
-    prob5 = len(both_5)/len(sec_last_minus)
-    prob6 = len(both_6)/len(sec_last_minus)
-    prob7 = len(both_7)/len(sec_last_plus)
-    prob8 = len(both_8)/len(sec_last_plus)
-    mean_last_day1 = mean_diff(sec_last_minus, last_day)
-    mean_last_day2 = mean_diff(sec_last_plus, last_day)
-
-    print("when second_last_spike appears to be -, the probability of last day spike being - is: {}".format(prob1))
-
-    print("when second_last_spike appears to be -, the probability of last day spike being + is: {}".format(prob2))
-    print("given a negative spike on the second-last day of a month, the mean diffs on last day of month is: {}".format(
-        mean_last_day1))
-    print("the probability of negative last day diffs is {}, and the mean diffs is: {}".format(prob5,mean1))
-    print("the probability of positive last day diffs is {}, and the mean diffs is: {}\n".format(prob6,mean2))
-
-    print("when second_last_spike appears to be +, the probability of last day spike being - is: {}".format(prob3))
-    print("when second_last_spike appears to be +, the probability of last day spike being + is: {}".format(prob4))
-    print("given a positive spike on the second-last day of a month, the mean diffs on last day of month is: {}".format(
-        mean_last_day2))
-    print("the probability of negative last day diffs is {}, and the mean diffs is: {}".format(prob7, mean3))
-    print("the probability of positive last day diffs is {}, and the mean diffs is: {}\n".format(prob8, mean4))
-
-"""
-
 
 
 def tend():
     gg_rate = get_df(PATH, FILE)
     gg_rate = gg_rate[['date','m12']]
     gg_rate = gg_rate.rename(columns={'m12': 'rate'})
+
+    # if want all original data to produce a fit, comment the following lines:
     spikes_combined = gg_price()
     indices = list(spikes_combined.index)
-
-    # if want all original data to produce a fit, comment the following line:
     gg_rate.drop(gg_rate.index[indices], inplace=True)
+
+    # fitting
     gg_rate['smoothed'] = denoise(gg_rate['rate'])
 
     max_inds, min_inds = find_extrema(gg_rate['smoothed'])
@@ -180,7 +180,7 @@ def tend():
     # print(gg_rate.head())
     """
 
-    return extrema
+    return gg_rate, extrema
 
 
 def fe_price():
@@ -236,24 +236,20 @@ def gk_rate():
 
 
 def tend_days():
-    gg_rate = get_df(PATH, FILE)
-    gg_rate['diffs'] = gg_rate.m12.diff()
-    gg_rate = gg_rate[['date', 'diffs']]
-
-    days_group = get_days_group(gg_rate)
-
-    # print(days_group.head())
-    # days_group['group_ending_day'] = pd.Series([x + relativedelta(days=+GROUP_DAYS)
-    #                                             for x in days_group['gp_starting_day']])
-    days_group = days_group[['group_ending_day', 'pos', 'neg']]
-    days_group['tend'] = days_group.apply(lambda x: 'up' if (x.pos > x.neg) else 'down', axis=1)
-
-    extrema = tend()
+    gg_rate_fit, extrema = tend()
     extrema = extrema.sort_values(by='date')
     extrema = extrema.reset_index()
 
-    inds_to_drop = []
+    gg_rate = get_df(PATH, FILE)
+    gg_rate['diffs'] = gg_rate.m12.diff()
+    gg_rate = gg_rate[['date', 'diffs', 'm12']]
+    gg_rate = gg_rate.rename(columns={'m12': 'rate'})
 
+    days_group = get_days_group(gg_rate)
+    days_group = days_group[['group_ending_day', 'pos', 'neg']]
+    days_group['tend'] = days_group.apply(lambda x: 'up' if (x.pos > x.neg) else 'down', axis=1)
+
+    inds_to_drop = []
     for i in range(len(extrema)-1):
         date1 = extrema.iloc[i].date
         date2 = extrema.iloc[i+1].date
@@ -261,15 +257,13 @@ def tend_days():
         # ind1 = gg_rate[gg_rate['date'] == date1].index
         ind1 = extrema['index'][i]
         ind2 = extrema['index'][i+1]
-
         if (ind2 - ind1) < GROUP_DAYS:
             inds_to_drop.append(i)
             inds_to_drop.append(i+1)
-
     extrema.drop(extrema.index[inds_to_drop], inplace=True)
 
-    days_group['group_ending_day'] = pd.concat([days_group['group_ending_day'],
-                                                days_group['group_ending_day']]).drop_duplicates()
+    # days_group['group_ending_day'] = pd.concat([days_group['group_ending_day'],
+    #                                             days_group['group_ending_day']]).drop_duplicates()
 
     tend_groups = pd.merge(days_group, extrema, left_on='group_ending_day',
                            right_on='date', how='outer')
@@ -286,16 +280,14 @@ def tend_days():
     # ex_turn.to_excel('ex_turn_less_fit.xlsx')
     # ex_turn.to_excel('without_endstart_spikes.xlsx')
 
-    #using 'test' instead:
+    # using 'test' instead of the fitted extremas:
     test = pd.read_excel('test.xlsx')
     test = test[test['peak'] != 0][['date', 'peak']].rename(columns={'peak': 'extrema'})
     ex_turn = tend_stat(tend_groups, test)
     ex_turn['ind'] = ex_turn['date'].apply(lambda x: gg_rate[gg_rate['date'] == x].index.item())
-    ex_turn.to_excel('ex_turn_test.xlsx')
+    # ex_turn.to_excel('ex_turn_test.xlsx')
 
-
-
-
+    tend_plot(gg_rate, gg_rate_fit, ex_turn1, ex_turn)
 
 
 if __name__ == '__main__':

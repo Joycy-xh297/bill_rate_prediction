@@ -200,7 +200,7 @@ def get_first_day_perform(second_last, first_day):
     return dd, du, ud, uu, pos_mean, neg_mean
 
 
-def denoise(y_data, n=5):
+def denoise(y_data, n=10):
     b = [1.0/n] * n
     a = 1
     return filtfilt(b,a,y_data)
