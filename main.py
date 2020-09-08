@@ -306,6 +306,7 @@ if __name__ == '__main__':
     gg_detail = gg_detail[['date', 'open', 'high', 'low', 'close', 'volume']]
     gg_detail['date'] = pd.to_datetime(gg_detail['date'])
     gg_detail = gg_detail.replace('-', np.nan)
+    gg_detail = gg_detail.replace('  -', np.nan)
     # print(gg_detail.head())
     # print(type(gg_detail.iloc[2]['close']))
     gg = pd.merge(gg_detail, gg_rate, left_on='date', right_on='date')
