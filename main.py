@@ -14,6 +14,7 @@ SUFFIX = "" #xls for fe, xlsx for gg
 FILE = "Rate_GG.xlsx"
 FILE2 = "fe_price.xls"
 FILE3 = "GuokaiBank_rate.xls"
+DETAIL = "TradeDetails.bk.xlsx"
 THRES = 0.05
 THRES1 = 0.05 #for second last day
 THRES2 = 0.05 #for last day
@@ -296,10 +297,21 @@ if __name__ == '__main__':
     # fe_price()
     # tend()
     # gk_rate()
-    tend_days()
-    # gg_rate = get_df(PATH, FILE)
-    # gg_rate = gg_rate[['date', 'm12']]
-    # gg_rate.to_csv('gg_rate.csv')
+    # tend_days()
+    gg_rate = get_df(PATH, FILE)
+    gg_rate = gg_rate[['date', 'm12']]
+    gg_rate['date'] = pd.to_datetime(gg_rate['date'])
+    gg_detail = get_df(PATH, DETAIL)
+    gg_detail = gg_detail.loc[(gg_detail['term'] == '1Y') & (gg_detail['media'] == '电票') & (gg_detail['type'] == '银票')]
+    gg_detail = gg_detail[['date', 'open', 'high', 'low', 'close', 'volume']]
+    gg_detail['date'] = pd.to_datetime(gg_detail['date'])
+    gg_detail = gg_detail.replace('-', np.nan)
+    # print(gg_detail.head())
+    # print(type(gg_detail.iloc[2]['close']))
+    gg = pd.merge(gg_detail, gg_rate, left_on='date', right_on='date')
+    gg.to_csv('gg.csv')
+
+
 
 
 
