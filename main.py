@@ -297,5 +297,12 @@ if __name__ == '__main__':
     # tend()
     # gk_rate()
     tend_days()
+    # gg_rate = get_df(PATH, FILE)
+    # gg_rate = gg_rate[['date', 'm12']]
+    # gg_rate.to_csv('gg_rate.csv')
+
+
+
+
 
 
