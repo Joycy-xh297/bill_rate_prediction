@@ -307,10 +307,32 @@ if __name__ == '__main__':
     gg_detail['date'] = pd.to_datetime(gg_detail['date'])
     gg_detail = gg_detail.replace('-', np.nan)
     gg_detail = gg_detail.replace('  -', np.nan)
+    gg_detail = gg_detail.replace(' -', np.nan)
     # print(gg_detail.head())
     # print(type(gg_detail.iloc[2]['close']))
     gg = pd.merge(gg_detail, gg_rate, left_on='date', right_on='date')
-    gg.to_csv('gg.csv')
+    # gg['close'] = gg.apply(lambda x: x['m12'] if np.isnan(x['close']) else x['close'])
+    # gg['open'] = gg.apply(lambda x:  x['m12'] if np.isnan(x['open']) else x['open'])
+    # gg['high'] = gg.apply(lambda x:  x['m12'] if np.isnan(x['high']) else x['high'])
+    # gg['low'] = gg.apply(lambda x:  x['m12'] if np.isnan(x['low']) else x['low'])
+
+    gg.close.fillna(gg.m12, inplace=True)
+    gg.open.fillna(gg.m12, inplace=True)
+    gg.high.fillna(gg.m12, inplace=True)
+    gg.low.fillna(gg.m12, inplace=True)
+    # drop the whole row if any value is nan
+    gg = gg.dropna()
+
+
+    gg = gg[['date', 'open', 'high', 'low', 'close', 'volume']]
+    check = gg.apply(lambda s: pd.to_numeric(s, errors='coerce').notnull().all())
+    gg = gg.reset_index(drop=True)
+    print(gg.head())
+    print(len(gg))
+    print(check)
+    # print(gg.head())
+    #
+    gg.to_csv('../stock-trading-ml/gg.csv')
 
 
 
